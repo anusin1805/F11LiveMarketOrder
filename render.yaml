@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: f11-invest-backend
+    runtime: node
+    plan: starter
+    region: singapore
+
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+
+    healthCheckPath: /health
+
+    envVars:
+      - key: VENTURA_APP_KEY
+        sync: false
+
+      - key: VENTURA_CLIENT_ID
+        sync: false
+
+      - key: VENTURA_ACCESS_TOKEN
+        sync: false
+
+      - key: DASHBOARD_ORIGIN
+        value: https://anusin1805.github.io
+
+      - key: NODE_VERSION
+        value: 20.11.0
+
+      - key: NODE_ENV
+        value: production
