@@ -18,3 +18,8 @@ router.use(investWalletRouter);
 router.use(investReferralsRouter);
 
 module.exports = router;
+
+const express = require('express');
+const app = express();
+// use app.get(), app.use(), etc.
+
