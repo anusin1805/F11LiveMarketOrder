@@ -5,99 +5,284 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>F11 Invest Dashboard</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 20px;
-            color: #333;
+        :root {
+            --bg-color: #0d131f;
+            --surface-color: #1a2235;
+            --accent-color: #ffb703;
+            --text-primary: #ffffff;
+            --text-secondary: #8a94a6;
+            --border-radius: 12px;
         }
-        .dashboard {
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        /* Header & Hamburger */
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: var(--bg-color);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            color: var(--accent-color);
+            font-size: 24px;
+            cursor: pointer;
+            margin-right: 15px;
+            padding: 5px;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-box {
+            background: var(--accent-color);
+            color: #000;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 280px;
+            height: 100vh;
+            background-color: var(--bg-color);
+            box-shadow: 4px 0 15px rgba(0,0,0,0.5);
+            transition: left 0.3s ease-in-out;
+            z-index: 1000;
+            padding: 20px 0;
+            overflow-y: auto;
+            border-right: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .sidebar.open {
+            left: 0;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .nav-list {
+            list-style: none;
+            padding: 0;
+            margin: 60px 0 0 0;
+        }
+
+        .nav-item {
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 16px;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255, 183, 3, 0.1);
+            color: var(--text-primary);
+        }
+
+        .nav-item.active {
+            border-left: 4px solid var(--accent-color);
+            border-radius: 0 20px 20px 0;
+            margin-right: 20px;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 20px;
             max-width: 800px;
             margin: 0 auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
+
         .panel {
+            background: var(--surface-color);
             margin-bottom: 20px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
-        button {
-            background-color: #0056b3;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            margin: 5px 5px 5px 0;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.2s;
+
+        .panel h2 {
+            margin-top: 0;
+            font-size: 18px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
         }
-        button:hover {
-            background-color: #004494;
-        }
+
         pre {
-            background: #272822;
-            color: #f8f8f2;
+            background: #111827;
+            color: #a7f3d0;
             padding: 15px;
-            border-radius: 4px;
+            border-radius: 8px;
             overflow-x: auto;
-            min-height: 100px;
+            min-height: 150px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            border: 1px solid rgba(255,255,255,0.1);
         }
+
         .endpoint-label {
             font-size: 0.85em;
-            color: #666;
+            color: var(--accent-color);
             margin-bottom: 10px;
+            display: block;
+            font-family: monospace;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+        }
+
+        .overlay.show {
             display: block;
         }
     </style>
 </head>
 <body>
 
-<div class="dashboard">
-    <h1>F11 Invest Dashboard</h1>
-    <p>Connecting to backend at: <code>httpsf://4245d0a5-b7ef-4302-a10c-3a6f1</code></p>
-
-    <!-- Users & Wallet Panel -->
-    <div class="panel">
-        <h2>Users & Wallet</h2>
-        <!-- Calls investWalletRouter -->
-        <button onclick="fetchData('/invest/wallet/overview')">Get Wallet & Credit Line</button>
+<!-- Header -->
+<header class="header">
+    <button class="menu-btn" onclick="toggleMenu()">☰</button>
+    <div class="header-title">
+        <div class="logo-box">F</div>
+        <div>
+            <div style="font-weight: bold; font-size: 18px;">F11</div>
+            <div style="color: var(--accent-color); font-size: 12px; font-weight: bold; letter-spacing: 1px;">INVEST</div>
+        </div>
     </div>
+</header>
 
-    <!-- Market & Strategy Panel -->
+<!-- Overlay for mobile closing -->
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+<!-- Touch Side Navigation Drawer -->
+<!-- Tab structure sourced from image_2.png -->
+<nav class="sidebar" id="sidebar">
+    <button class="close-btn" onclick="toggleMenu()">✕</button>
+    <ul class="nav-list">
+        <li class="nav-item active" onclick="handleNavClick(this, '')">
+            <span class="nav-icon">⊞</span> Overview
+        </li>
+        <!-- Route maps to invest-predictions.js from image_3.png -->
+        <li class="nav-item" onclick="handleNavClick(this, '/invest/predictions/daily-challenge')">
+            <span class="nav-icon">🏆</span> Daily challenge
+        </li>
+        <!-- Route maps to invest-predictions.js from image_3.png -->
+        <li class="nav-item" onclick="handleNavClick(this, '/invest/predictions/summary')">
+            <span class="nav-icon">📈</span> Predictions
+        </li>
+        <!-- Route maps to invest-strategy.js from image_3.png -->
+        <li class="nav-item" onclick="handleNavClick(this, '/invest/strategy/recommendations')">
+            <span class="nav-icon">🧠</span> AI strategy
+        </li>
+        <!-- Route maps to invest-wallet.js from image_3.png -->
+        <li class="nav-item" onclick="handleNavClick(this, '/invest/wallet/credit-line')">
+            <span class="nav-icon">💳</span> Credit line
+        </li>
+        <!-- Route maps to invest-wallet.js from image_3.png -->
+        <li class="nav-item" onclick="handleNavClick(this, '/invest/wallet/overview')">
+            <span class="nav-icon">💰</span> F11 wallet
+        </li>
+        <li class="nav-item" onclick="handleNavClick(this, '/invest/predictions/leaderboard')">
+            <span class="nav-icon">🏅</span> Leaderboard
+        </li>
+        <li class="nav-item" onclick="handleNavClick(this, '/invest/referrals/list')">
+            <span class="nav-icon">👥</span> Referrals
+        </li>
+    </ul>
+</nav>
+
+<!-- Main Content Area -->
+<div class="main-content">
     <div class="panel">
-        <h2>Market, Strategy & Gamification</h2>
-        <!-- Calls investMarketRouter -->
-        <button onclick="fetchData('/invest/market/status')">Check Ventura Status</button>
-        <button onclick="fetchData('/invest/market/quote/RELIANCE')">Get RELIANCE Quote</button>
-        
-        <!-- Calls investStrategyRouter -->
-        <button onclick="fetchData('/invest/strategy/recommendations')">View AI Strategies</button>
-        
-        <!-- Calls investPredictionsRouter -->
-        <button onclick="fetchData('/invest/predictions/summary')">View Daily Predictions</button>
+        <h2>Live API Response Console</h2>
+        <span id="current-endpoint" class="endpoint-label">Select a feature from the menu...</span>
+        <pre id="output">System Ready. Awaiting user interaction.</pre>
     </div>
-
-    <!-- Output Display -->
+    
+    <!-- Test actions for market data based on invest-market.js -->
     <div class="panel">
-        <h3>API Response:</h3>
-        <span id="current-endpoint" class="endpoint-label"></span>
-        <pre id="output">Waiting for request...</pre>
+        <h2>Quick Actions (Market)</h2>
+        <button style="background: var(--accent-color); color: #000; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold;" 
+                onclick="fetchData('/invest/market/status')">Check Ventura Live Status</button>
     </div>
 </div>
 
 <script>
-    // The base URL of your Replit backend
-    const BASE_URL = 'https://github.com/anusin1805/F11LiveMarketOrder/tree/main/';
+    // Note: Update BASE_URL to point to your live backend server URL 
+    // (e.g., your deployed Replit URL like https://your-app.replit.dev/api)
+    // Currently using the Github URL as a placeholder based on original HTML.
+    const BASE_URL = 'https://github.com/anusin1805/F11LiveMarketOrder/tree/main';
 
-    /**
-     * Fetches data from the backend API and displays it on the page.
-     * @param {string} endpoint - The backend route to call.
-     */
+    function toggleMenu() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('show');
+    }
+
+    function handleNavClick(element, endpoint) {
+        // Handle active state styling
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        element.classList.add('active');
+        
+        // Close menu on mobile after selection
+        toggleMenu();
+
+        if(endpoint) {
+            fetchData(endpoint);
+        } else {
+            document.getElementById('output').textContent = "Overview Dashboard Loaded.";
+            document.getElementById('current-endpoint').textContent = "Dashboard View";
+        }
+    }
+
     async function fetchData(endpoint) {
         const outputElement = document.getElementById('output');
         const endpointLabel = document.getElementById('current-endpoint');
@@ -106,14 +291,10 @@
         endpointLabel.textContent = `GET ${BASE_URL}${endpoint}`;
 
         try {
-            // Make the HTTP request to the Express backend running on Replit
             const response = await fetch(`${BASE_URL}${endpoint}`, {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json',
-                    // Note: If testing endpoints that require authorization (like wallet/margin), 
-                    // you would append the Bearer token here.
-                    // 'Authorization': 'Bearer YOUR_TEST_TOKEN'
+                    'Content-Type': 'application/json'
                 }
             });
             
@@ -122,12 +303,10 @@
             }
 
             const data = await response.json();
-            
-            // Format the JSON nicely with a 2-space indent
             outputElement.textContent = JSON.stringify(data, null, 2);
             
         } catch (error) {
-            outputElement.textContent = `Error fetching data:\n${error.message}\n\nTroubleshooting:\n1. Ensure your Node.js/Express server is actively running on Replit.\n2. Verify there are no CORS (Cross-Origin Resource Sharing) blocks.`;
+            outputElement.textContent = `Error fetching data:\n${error.message}\n\nTroubleshooting:\n1. Ensure your Express server (index.js) is actively running on Replit.\n2. Ensure CORS is configured properly in your backend to accept requests from this frontend.`;
         }
     }
 </script>
