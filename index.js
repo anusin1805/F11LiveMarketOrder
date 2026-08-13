@@ -2,7 +2,7 @@
 // F11 Live Trading & Gamification Modules
 const { investMarketRouter } = require('./invest-market');
 const { investUsersRouter } = require('./invest-users');
-const { investPredictionsRouter } = require('./invest-predictions');
+const { investPredictionsRouter } = require('./invest-prediction');
 const { investStrategyRouter } = require('./invest-strategy');
 const { investWalletRouter } = require('./invest-wallet');
 const { investReferralsRouter } = require('./invest-referrals');
