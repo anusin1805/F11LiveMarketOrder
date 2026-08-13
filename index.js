@@ -1,5 +1,11 @@
 const express = require('express');
+const cors = require('cors'); // Import cors
 const app = express();
+
+// Enable CORS for your GitHub Pages frontend
+app.use(cors({
+  origin: 'https://anusin1805.github.io'
+}));
 
 // Middleware to parse JSON bodies
 app.use(express.json());
