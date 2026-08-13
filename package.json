@@ -2,13 +2,13 @@
   "name": "f11-invest-backend",
   "version": "0.1.0",
   "description": "F11 Invest — Ventura live trading, AI strategy, prediction challenge, wallet & referral routes",
-  "main": "src/index.js",
+  "main": "/index.js",
   "engines": {
     "node": ">=20.0.0"
   },
   "scripts": {
     "dev": "node --watch src/index.js",
-    "start": "node src/index.js"
+    "start": "node /index.js"
   },
   "dependencies": {
     "axios": "^1.7.2",
