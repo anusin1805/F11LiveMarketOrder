@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F11 Invest Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .dashboard {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .panel {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 5px 5px 5px 0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #004494;
+        }
+        pre {
+            background: #272822;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            min-height: 100px;
+        }
+        .endpoint-label {
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 10px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard">
+    <h1>F11 Invest Dashboard</h1>
+    <p>Connecting to backend at: <code>https://4245d0a5-b7ef-4302-a10c-3a6f1b018ca2-00-3v2v3qi9shl01.sisko.replit.dev</code></p>
+
+    <!-- Users & Wallet Panel -->
+    <div class="panel">
+        <h2>Users & Wallet</h2>
+        <!-- Calls investWalletRouter -->
+        <button onclick="fetchData('/invest/wallet/overview')">Get Wallet & Credit Line</button>
+    </div>
+
+    <!-- Market & Strategy Panel -->
+    <div class="panel">
+        <h2>Market, Strategy & Gamification</h2>
+        <!-- Calls investMarketRouter -->
+        <button onclick="fetchData('/invest/market/status')">Check Ventura Status</button>
+        <button onclick="fetchData('/invest/market/quote/RELIANCE')">Get RELIANCE Quote</button>
+        
+        <!-- Calls investStrategyRouter -->
+        <button onclick="fetchData('/invest/strategy/recommendations')">View AI Strategies</button>
+        
+        <!-- Calls investPredictionsRouter -->
+        <button onclick="fetchData('/invest/predictions/summary')">View Daily Predictions</button>
+    </div>
+
+    <!-- Output Display -->
+    <div class="panel">
+        <h3>API Response:</h3>
+        <span id="current-endpoint" class="endpoint-label"></span>
+        <pre id="output">Waiting for request...</pre>
+    </div>
+</div>
+
+<script>
+    // The base URL of your Replit backend
+    const BASE_URL = 'https://4245d0a5-b7ef-4302-a10c-3a6f1b018ca2-00-3v2v3qi9shl01.sisko.replit.dev';
+
+    /**
+     * Fetches data from the backend API and displays it on the page.
+     * @param {string} endpoint - The backend route to call.
+     */
+    async function fetchData(endpoint) {
+        const outputElement = document.getElementById('output');
+        const endpointLabel = document.getElementById('current-endpoint');
+        
+        outputElement.textContent = 'Loading...';
+        endpointLabel.textContent = `GET ${BASE_URL}${endpoint}`;
+
+        try {
+            // Make the HTTP request to the Express backend running on Replit
+            const response = await fetch(`${BASE_URL}${endpoint}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Note: If testing endpoints that require authorization (like wallet/margin), 
+                    // you would append the Bearer token here.
+                    // 'Authorization': 'Bearer YOUR_TEST_TOKEN'
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            
+            // Format the JSON nicely with a 2-space indent
+            outputElement.textContent = JSON.stringify(data, null, 2);
+            
+        } catch (error) {
+            outputElement.textContent = `Error fetching data:\n${error.message}\n\nTroubleshooting:\n1. Ensure your Node.js/Express server is actively running on Replit.\n2. Verify there are no CORS (Cross-Origin Resource Sharing) blocks.`;
+        }
+    }
+</script>
+
+</body>
+</html>
