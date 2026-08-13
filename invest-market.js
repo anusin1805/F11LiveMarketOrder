@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { venturaService } = require('../services/ventura');
+const { venturaService } = require('./services/ventura');
 
 const investMarketRouter = Router();
 
