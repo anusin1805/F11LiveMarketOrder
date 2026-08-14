@@ -255,10 +255,9 @@
 </div>
 
 <script>
-    // Note: Update BASE_URL to point to your live backend server URL 
-    // (e.g., your deployed Replit URL like https://your-app.replit.dev/api)
-    // Currently using the Github URL as a placeholder based on original HTML.
-    const BASE_URL = 'https://f11livemarketorder.onrender.com/';
+
+        // Removed the trailing slash here so it combines cleanly with your routes
+    const BASE_URL = 'https://f11livemarketorder.onrender.com';
 
     function toggleMenu() {
         const sidebar = document.getElementById('sidebar');
@@ -288,6 +287,7 @@
         const endpointLabel = document.getElementById('current-endpoint');
         
         outputElement.textContent = 'Loading...';
+        // Now this will correctly output: https://f11livemarketorder.onrender.com/invest/market/status
         endpointLabel.textContent = `GET ${BASE_URL}${endpoint}`;
 
         try {
@@ -306,9 +306,10 @@
             outputElement.textContent = JSON.stringify(data, null, 2);
             
         } catch (error) {
-            outputElement.textContent = `Error fetching data:\n${error.message}\n\nTroubleshooting:\n1. Ensure your Express server (index.js) is actively running on Replit.\n2. Ensure CORS is configured properly in your backend to accept requests from this frontend.`;
+            outputElement.textContent = `Error fetching data:\n${error.message}\n\nTroubleshooting:\n1. Ensure your backend is actively running on Render.\n2. Ensure CORS is configured properly in your backend to accept requests from this frontend.`;
         }
     }
+
 </script>
 
 </body>
